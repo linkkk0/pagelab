@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>pkgjson前端页面分享站</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:
+    "Microsoft YaHei",
+    "PingFang SC",
+    sans-serif;
+}
+
+body{
+    min-height:100vh;
+    background:
+    radial-gradient(circle at top,#243b55,#0b1020 45%,#05070d);
+    color:white;
+    overflow-x:hidden;
+}
+
+
+/* 背景光 */
+
+.bg{
+    position:fixed;
+    inset:0;
+    overflow:hidden;
+    z-index:-1;
+}
+
+
+.circle{
+    position:absolute;
+    border-radius:50%;
+    filter:blur(80px);
+    opacity:.5;
+    animation:float 12s infinite alternate;
+}
+
+
+.c1{
+    width:400px;
+    height:400px;
+    background:#00eaff;
+    top:-100px;
+    left:-100px;
+}
+
+
+.c2{
+    width:350px;
+    height:350px;
+    background:#8b5cf6;
+    right:-80px;
+    bottom:50px;
+}
+
+
+.c3{
+    width:250px;
+    height:250px;
+    background:#ff4ecd;
+    left:40%;
+    bottom:-100px;
+}
+
+
+@keyframes float{
+
+    from{
+        transform:translateY(0);
+    }
+
+    to{
+        transform:translateY(80px);
+    }
+}
+
+
+
+
+/* 主区域 */
+
+.hero{
+
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:20px;
+
+}
+
+
+.logo{
+
+    font-size:18px;
+    letter-spacing:5px;
+    color:#8be9ff;
+    margin-bottom:30px;
+}
+
+
+
+h1{
+
+    font-size:70px;
+    font-weight:900;
+
+    background:
+    linear-gradient(
+    90deg,
+    #fff,
+    #8be9ff,
+    #c084fc,
+    #fff
+    );
+
+    background-size:300%;
+
+    -webkit-background-clip:text;
+    color:transparent;
+
+    animation:
+    shine 6s linear infinite;
+
+}
+
+
+@keyframes shine{
+
+    from{
+        background-position:0%;
+    }
+
+    to{
+        background-position:300%;
+    }
+
+}
+
+
+
+.subtitle{
+
+    margin-top:25px;
+    max-width:750px;
+
+    font-size:20px;
+
+    line-height:1.8;
+
+    color:#cbd5e1;
+
+}
+
+
+
+.buttons{
+
+    margin-top:45px;
+
+}
+
+
+button{
+
+    padding:15px 40px;
+
+    border-radius:50px;
+
+    border:none;
+
+    margin:10px;
+
+    font-size:16px;
+
+    cursor:pointer;
+
+    color:white;
+
+    background:
+    linear-gradient(
+    135deg,
+    #00c6ff,
+    #8b5cf6
+    );
+
+    box-shadow:
+    0 0 30px #00c6ff55;
+
+    transition:.3s;
+
+}
+
+
+button:hover{
+
+    transform:
+    translateY(-5px)
+    scale(1.05);
+
+}
+
+
+
+
+
+/* 作品区域 */
+
+
+.works{
+
+    padding:80px 8%;
+
+}
+
+
+.title{
+
+    text-align:center;
+
+    font-size:40px;
+
+    margin-bottom:50px;
+
+}
+
+
+
+.cards{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(280px,1fr));
+
+    gap:30px;
+
+}
+
+
+
+.card{
+
+    background:
+    rgba(255,255,255,.08);
+
+    border:
+
+    1px solid
+    rgba(255,255,255,.15);
+
+
+    backdrop-filter:blur(20px);
+
+    padding:30px;
+
+    border-radius:25px;
+
+    transition:.4s;
+
+
+}
+
+
+
+.card:hover{
+
+    transform:
+    translateY(-15px);
+
+    box-shadow:
+    0 20px 50px rgba(0,0,0,.4);
+
+}
+
+
+.icon{
+
+    font-size:45px;
+    margin-bottom:20px;
+
+}
+
+
+
+.card h3{
+
+    font-size:25px;
+
+    margin-bottom:15px;
+
+}
+
+
+.card p{
+
+    color:#cbd5e1;
+
+    line-height:1.7;
+
+}
+
+
+
+/* footer */
+
+
+footer{
+
+    text-align:center;
+
+    padding:40px;
+
+    color:#94a3b8;
+
+}
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="bg">
+
+<div class="circle c1"></div>
+
+<div class="circle c2"></div>
+
+<div class="circle c3"></div>
+
+</div>
+
+
+
+<section class="hero">
+
+
+<div class="logo">
+PKGJSON · AI FRONTEND LAB
+</div>
+
+
+
+<h1>
+pkgjson前端页面分享站
+</h1>
+
+
+<div class="subtitle">
+
+这里收藏我与 AI 一起创造的前端作品。  
+从灵感、设计到代码实现，
+探索未来网页设计的新可能。
+
+</div>
+
+
+<div class="buttons">
+
+<button onclick="scrollToWorks()">
+浏览作品
+</button>
+
+
+<button>
+加入收藏
+</button>
+
+</div>
+
+
+</section>
+
+
+
+
+
+<section class="works" id="works">
+
+
+<div class="title">
+✨ 精选前端作品
+</div>
+
+
+
+<div class="cards">
+
+
+<div class="card">
+
+<div class="icon">
+🤖
+</div>
+
+<h3>
+AI 共创页面
+</h3>
+
+<p>
+利用人工智能辅助设计，
+创造具有未来感的网页体验。
+</p>
+
+</div>
+
+
+
+<div class="card">
+
+<div class="icon">
+🌌
+</div>
+
+<h3>
+未来 UI 设计
+</h3>
+
+<p>
+探索玻璃拟态、动态效果、
+沉浸式交互的新方向。
+</p>
+
+</div>
+
+
+
+
+<div class="card">
+
+<div class="icon">
+💻
+</div>
+
+<h3>
+开源前端作品
+</h3>
+
+<p>
+分享 HTML、CSS、JavaScript
+实现的精彩页面。
+</p>
+
+</div>
+
+
+
+</div>
+
+
+</section>
+
+
+
+<footer>
+
+© 2026 pkgjson前端页面分享站  
+<br>
+Designed with AI & Frontend
+
+</footer>
+
+
+
+<script>
+
+function scrollToWorks(){
+
+document
+.getElementById("works")
+.scrollIntoView({
+behavior:"smooth"
+});
+
+}
+
+
+</script>
+
+
+
+</body>
+
+</html>
