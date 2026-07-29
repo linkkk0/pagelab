@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>崩坏：星穹铁道 - 遐蝶</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #06040a;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: #ffffff;
+        }
+
+        /* 视口主容器 */
+        .container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at center, #1a0e2e 0%, #06040a 100%);
+            perspective: 1200px;
+        }
+
+        /* ================= 1. 从左到右条状加载动画 (带数字0-100变化) ================= */
+        .loader-overlay {
+            position: absolute;
+            inset: 0;
+            background: #06040a;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            animation: fadeOutLoader 0.4s cubic-bezier(0.7, 0, 0.84, 0) 2.2s forwards;
+            pointer-events: none;
+        }
+
+        @keyframes fadeOutLoader {
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+
+        .bar-loader-container {
+            position: relative;
+            width: 320px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .bar-loader-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            color: #b893e6;
+            font-weight: 700;
+            text-shadow: 0 0 8px rgba(184, 147, 230, 0.6);
+            font-family: monospace;
+        }
+
+        /* 数字从0%到100%的变化效果 */
+        .percent-counter::after {
+            content: "0%";
+            animation: countUp 1.8s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+        }
+
+        @keyframes countUp {
+            0%   { content: "0%"; }
+            10%  { content: "12%"; }
+            25%  { content: "34%"; }
+            40%  { content: "58%"; }
+            60%  { content: "79%"; }
+            80%  { content: "92%"; }
+            100% { content: "100%"; }
+        }
+
+        .bar-track {
+            position: relative;
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 3px;
+            overflow: hidden;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.8);
+        }
+
+        .bar-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #61399d 0%, #b893e6 70%, #ffffff 100%);
+            box-shadow: 0 0 15px #b893e6, 0 0 30px #e5d4ff;
+            animation: fillProgress 1.8s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+        }
+
+        /* 条状高光扫过效果 */
+        .bar-glare {
+            position: absolute;
+            top: 0;
+            left: -50%;
+            width: 40%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+            animation: glareSweep 1.2s ease-in-out infinite;
+        }
+
+        @keyframes fillProgress {
+            0% { width: 0%; }
+            10% { width: 12%; }
+            25% { width: 34%; }
+            40% { width: 58%; }
+            60% { width: 79%; }
+            80% { width: 92%; }
+            100% { width: 100%; }
+        }
+
+        @keyframes glareSweep {
+            100% { left: 150%; }
+        }
+
+        /* ================= 2. 主舞台容器 ================= */
+        .card-stage {
+            position: relative;
+            width: 90vw;
+            max-width: 1280px;
+            height: 80vh;
+            max-height: 720px;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.9), 0 0 40px rgba(138, 66, 173, 0.25);
+            border: 1px solid rgba(190, 150, 235, 0.2);
+            opacity: 0;
+            transform: scale(0.95) translateY(20px);
+            animation: stageAppear 0.6s cubic-bezier(0.16, 1, 0.3, 1) 2.2s forwards;
+        }
+
+        @keyframes stageAppear {
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* 角色立绘进场 */
+        .character-img {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            z-index: 2;
+            opacity: 0;
+            transform: scale(1.2);
+            animation: charEnter 1s cubic-bezier(0.16, 1, 0.3, 1) 2.4s forwards, zoomEffect 18s infinite alternate ease-in-out 3.4s;
+        }
+
+        @keyframes charEnter {
+            0% {
+                opacity: 0;
+                transform: scale(1.25);
+                filter: blur(12px) brightness(1.8);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1.05);
+                filter: blur(0px) brightness(1);
+            }
+        }
+
+        @keyframes zoomEffect {
+            0% { transform: scale(1.05) translateY(0); }
+            100% { transform: scale(1.1) translateY(-10px); }
+        }
+
+        /* 斩击线粒子 */
+        .slash-effect {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent 45%, rgba(229, 212, 255, 0.9) 50%, transparent 55%);
+            z-index: 3;
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(-100%) rotate(25deg);
+            animation: slashFlash 0.4s ease-out 2.4s forwards;
+        }
+
+        @keyframes slashFlash {
+            0% { opacity: 1; transform: translateY(-50%) rotate(25deg); }
+            100% { opacity: 0; transform: translateY(50%) rotate(25deg); }
+        }
+
+        /* 蒙版 */
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, rgba(6, 4, 10, 0.85) 0%, rgba(6, 4, 10, 0.3) 45%, rgba(6, 4, 10, 0.1) 100%);
+            z-index: 4;
+        }
+
+        /* ================= 3. 炫酷文字划入特效 ================= */
+        
+        /* 顶部阵营标语 */
+        .header-banner {
+            position: absolute;
+            top: 8%;
+            left: 6%;
+            z-index: 5;
+            overflow: hidden;
+            padding-right: 20px;
+        }
+
+        .faction-title {
+            font-size: 3.2rem;
+            font-weight: 900;
+            letter-spacing: 6px;
+            background: linear-gradient(135deg, #ffffff 0%, #d19fe8 50%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(184, 147, 230, 0.6);
+            line-height: 1.1;
+            
+            opacity: 0;
+            transform: translateX(-120%) skewX(-15deg);
+            animation: titleSlideIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) 2.6s forwards;
+        }
+
+        .subtitle {
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 8px;
+            color: rgba(229, 212, 255, 0.7);
+            margin-top: 6px;
+            text-transform: uppercase;
+            
+            opacity: 0;
+            transform: translateX(-100%);
+            animation: subSlideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) 2.8s forwards;
+        }
+
+        @keyframes titleSlideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0) skewX(0deg);
+            }
+        }
+
+        @keyframes subSlideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* 左下角角色信息块 */
+        .info-card {
+            position: absolute;
+            bottom: 10%;
+            left: 6%;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .char-name-group {
+            position: relative;
+            display: flex;
+            align-items: baseline;
+            gap: 15px;
+            overflow: hidden;
+            padding: 5px 10px 5px 0;
+        }
+
+        .char-name {
+            font-size: 3.2rem;
+            font-weight: 900;
+            letter-spacing: 4px;
+            color: #ffffff;
+            text-shadow: 0 0 20px rgba(184, 147, 230, 0.8);
+            opacity: 0;
+            transform: translateX(-100%);
+            animation: nameSlideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) 2.8s forwards;
+        }
+
+        .char-name-group::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(229, 212, 255, 0.8), transparent);
+            animation: lightSweep 0.8s ease-out 2.8s forwards;
+        }
+
+        @keyframes nameSlideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes lightSweep {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .rarity-stars {
+            display: flex;
+            gap: 4px;
+            color: #ffd700;
+            font-size: 1.3rem;
+            filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.8));
+            opacity: 0;
+            transform: scale(0);
+            animation: popStars 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 3.1s forwards;
+        }
+
+        @keyframes popStars {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .tag-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .tag {
+            padding: 6px 16px;
+            background: rgba(138, 66, 173, 0.3);
+            border: 1px solid rgba(209, 159, 232, 0.6);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            color: #f3e8ff;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .tag:nth-child(1) {
+            animation: tagUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 3.0s forwards;
+        }
+
+        .tag:nth-child(2) {
+            animation: tagUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 3.15s forwards;
+        }
+
+        @keyframes tagUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 右侧阵营徽标 */
+        .faction-logo {
+            position: absolute;
+            right: 6%;
+            bottom: 10%;
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 1px solid rgba(209, 159, 232, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 5;
+            background: rgba(6, 4, 10, 0.5);
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            animation: logoEnter 0.6s ease-out 3.1s forwards, pulseLogo 3s infinite alternate ease-in-out 3.7s;
+        }
+
+        @keyframes logoEnter {
+            from { opacity: 0; transform: scale(0.5) rotate(-45deg); }
+            to { opacity: 1; transform: scale(1) rotate(0deg); }
+        }
+
+        @keyframes pulseLogo {
+            0% { transform: scale(1); box-shadow: 0 0 15px rgba(138, 66, 173, 0.3); }
+            100% { transform: scale(1.08); box-shadow: 0 0 35px rgba(184, 147, 230, 0.7); }
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 768px) {
+            .faction-title { font-size: 2.2rem; }
+            .char-name { font-size: 2.2rem; }
+            .faction-logo { width: 75px; height: 75px; right: 5%; bottom: 8%; }
+            .bar-loader-container { width: 240px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="loader-overlay">
+            <div class="bar-loader-container">
+                <div class="bar-loader-header">
+                    <span>SYSTEM INITIALIZING...</span>
+                    <span class="percent-counter"></span>
+                </div>
+                <div class="bar-track">
+                    <div class="bar-fill"></div>
+                    <div class="bar-glare"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-stage">
+            <div class="slash-effect"></div>
+
+            <img class="character-img" src="lihui.png" alt="遐蝶">
+
+            <div class="overlay"></div>
+
+            <div class="header-banner">
+                <div class="faction-title">崩坏：星穹铁道</div>
+                <div class="subtitle">Honkai: Star Rail</div>
+            </div>
+
+            <div class="info-card">
+                <div class="char-name-group">
+                    <div class="char-name">遐蝶</div>
+                    <div class="rarity-stars">★★★★★</div>
+                </div>
+                <div class="tag-group">
+                    <span class="tag">量子 / 虚无</span>
+                    <span class="tag">冥龙之伴</span>
+                </div>
+            </div>
+
+            <div class="faction-logo">
+                <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#e5d4ff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2L15 8L22 9L17 14L18.5 21L12 17.5L5.5 21L7 14L2 9L9 8L12 2Z" />
+                </svg>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

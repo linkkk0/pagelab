@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>崩坏：星穹铁道 - 遐蝶</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #0d0b18;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: #ffffff;
+        }
+
+        /* 统一容器 */
+        .container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at center, #2d1f47 0%, #0d0b18 100%);
+        }
+
+        /* 背景装饰与发光效果 */
+        .bg-glow {
+            position: absolute;
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle, rgba(162, 114, 219, 0.25) 0%, rgba(0, 0, 0, 0) 70%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* 模拟进场与切场动画容器 */
+        .card-stage {
+            position: relative;
+            width: 90vw;
+            max-width: 1200px;
+            height: 80vh;
+            max-height: 675px;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(190, 150, 235, 0.2);
+            animation: stageAppear 0.8s ease-out forwards;
+        }
+
+        @keyframes stageAppear {
+            0% {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* 角色全图背景 */
+        .character-img {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            z-index: 2;
+            transform: scale(1.05);
+            animation: zoomEffect 20s infinite alternate ease-in-out;
+        }
+
+        @keyframes zoomEffect {
+            0% { transform: scale(1.03); }
+            100% { transform: scale(1.08); }
+        }
+
+        /* 遮罩蒙版（强化文字对比度与氛围） */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(13, 11, 24, 0.85) 0%, rgba(13, 11, 24, 0.4) 40%, rgba(13, 11, 24, 0.1) 100%);
+            z-index: 3;
+        }
+
+        /* 仿视频滑入标语（Glory style header） */
+        .header-banner {
+            position: absolute;
+            top: 10%;
+            left: -100%;
+            width: auto;
+            z-index: 4;
+            animation: slideInLeft 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+        }
+
+        @keyframes slideInLeft {
+            0% { left: -100%; }
+            100% { left: 5%; }
+        }
+
+        .faction-title {
+            font-size: 3rem;
+            font-weight: 900;
+            letter-spacing: 4px;
+            background: linear-gradient(185deg, #ffffff 0%, #b893e6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(162, 114, 219, 0.5);
+            line-height: 1.1;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 6px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 5px;
+            text-transform: uppercase;
+        }
+
+        /* 角色信息卡片 (视频左下角样式) */
+        .info-card {
+            position: absolute;
+            bottom: 12%;
+            left: 5%;
+            z-index: 4;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.6s ease-out 0.8s forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 名字与定位 */
+        .char-name-group {
+            display: flex;
+            align-items: baseline;
+            gap: 15px;
+        }
+
+        .char-name {
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: #ffffff;
+            text-shadow: 0 20px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        /* 稀有度五星 */
+        .rarity-stars {
+            display: flex;
+            gap: 4px;
+            color: #ffcc00;
+            font-size: 1.2rem;
+            text-shadow: 0 0 8px rgba(255, 204, 0, 0.8);
+        }
+
+        /* 属性/命途标签 */
+        .tag-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .tag {
+            padding: 4px 12px;
+            background: rgba(162, 114, 219, 0.25);
+            border: 1px solid rgba(210, 180, 250, 0.5);
+            border-radius: 4px;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            color: #e5d4ff;
+            backdrop-filter: blur(4px);
+        }
+
+        /* 底部资源更新进度条（模仿视频底部UI） */
+        .download-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 8px 15px;
+            background: rgba(0, 0, 0, 0.75);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.75rem;
+            color: #a0a0a0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 5;
+            box-sizing: border-box;
+        }
+
+        .progress-text {
+            font-family: monospace;
+        }
+
+        .progress-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 2px;
+            width: 65%;
+            background: linear-gradient(90deg, #8a42ad, #d19fe8);
+            box-shadow: 0 0 8px #d19fe8;
+        }
+
+        /* 标志 Logo (阵营/特色图标) */
+        .faction-logo {
+            position: absolute;
+            right: 8%;
+            bottom: 15%;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 2px solid rgba(200, 160, 255, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 4;
+            background: rgba(13, 11, 24, 0.4);
+            backdrop-filter: blur(5px);
+            animation: pulseLogo 3s infinite alternate ease-in-out;
+        }
+
+        @keyframes pulseLogo {
+            0% { transform: scale(1); box-shadow: 0 0 10px rgba(162, 114, 219, 0.2); }
+            100% { transform: scale(1.05); box-shadow: 0 0 25px rgba(162, 114, 219, 0.6); }
+        }
+
+        .faction-logo img {
+            width: 70%;
+            height: 70%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 5px rgba(255,255,255,0.5));
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .faction-title { font-size: 2rem; }
+            .char-name { font-size: 2rem; }
+            .faction-logo { width: 80px; height: 80px; right: 5%; bottom: 12%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="bg-glow"></div>
+
+        <div class="card-stage">
+            <img class="character-img" src="lihui.png" alt="遐蝶">
+
+            <div class="overlay"></div>
+
+            <div class="header-banner">
+                <div class="faction-title">崩坏：星穹铁道</div>
+                <div class="subtitle">GLORY BELONGS TO US</div>
+            </div>
+
+            <div class="info-card">
+                <div class="char-name-group">
+                    <div class="char-name">遐蝶</div>
+                    <div class="rarity-stars">★★★★★</div>
+                </div>
+                <div class="tag-group">
+                    <span class="tag">量子 / 虚无</span>
+                    <span class="tag">冥龙之伴</span>
+                </div>
+            </div>
+
+            <div class="faction-logo">
+                <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#e5d4ff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2L15 8L22 9L17 14L18.5 21L12 17.5L5.5 21L7 14L2 9L9 8L12 2Z" />
+                </svg>
+            </div>
+
+            <div class="download-bar">
+                <div class="progress-line"></div>
+                <span class="progress-text">正在下载更新: 进度 16.2GB / 24.5GB | 已完成 38200个 | 速度 2.45MB/S</span>
+                <span>VER 3.0.0</span>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
