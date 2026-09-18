@@ -1,0 +1,727 @@
+/* =========================
+   基础
+========================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+    font-family:
+        "Microsoft YaHei",
+        "PingFang SC",
+        sans-serif;
+}
+
+
+body {
+
+    min-height: 100vh;
+
+    color: white;
+
+    background:
+        radial-gradient(
+            circle at top,
+            #243b55,
+            #05070d 65%
+        );
+
+    overflow-x: hidden;
+}
+
+
+/* =========================
+   背景光效
+========================= */
+
+body::before {
+
+    content: "";
+
+    position: fixed;
+
+    width: 500px;
+    height: 500px;
+
+    left: -180px;
+    top: -150px;
+
+    background: #00eaff;
+
+    filter: blur(150px);
+
+    opacity: .15;
+
+    pointer-events: none;
+
+    z-index: -1;
+}
+
+
+body::after {
+
+    content: "";
+
+    position: fixed;
+
+    width: 500px;
+    height: 500px;
+
+    right: -180px;
+    bottom: -180px;
+
+    background: #8b5cf6;
+
+    filter: blur(150px);
+
+    opacity: .18;
+
+    pointer-events: none;
+
+    z-index: -1;
+}
+
+
+/* =========================
+   顶部导航
+========================= */
+
+.header {
+
+    width: 100%;
+
+    padding: 35px 8%;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+}
+
+
+.logo {
+
+    font-size: 23px;
+
+    font-weight: 800;
+
+    letter-spacing: 2px;
+
+    color: #8be9ff;
+}
+
+
+.back {
+
+    color: #aebbd0;
+
+    text-decoration: none;
+
+    padding: 10px 20px;
+
+    border-radius: 20px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, .12);
+
+    background:
+        rgba(255, 255, 255, .05);
+
+    transition: .3s;
+}
+
+
+.back:hover {
+
+    color: white;
+
+    background:
+        rgba(255, 255, 255, .1);
+
+    transform: translateX(-4px);
+}
+
+
+/* =========================
+   Hero
+========================= */
+
+.hero {
+
+    text-align: center;
+
+    padding:
+        70px 20px 30px;
+}
+
+
+.hero h1 {
+
+    font-size:
+        clamp(42px, 6vw, 68px);
+
+    font-weight: 900;
+
+    letter-spacing: 2px;
+
+    background:
+
+        linear-gradient(
+            90deg,
+            #ffffff,
+            #8be9ff,
+            #c084fc,
+            #ffffff
+        );
+
+    background-size: 300%;
+
+    -webkit-background-clip: text;
+
+    background-clip: text;
+
+    color: transparent;
+
+    animation:
+        titleFlow 7s linear infinite;
+}
+
+
+@keyframes titleFlow {
+
+    0% {
+        background-position: 0%;
+    }
+
+    100% {
+        background-position: 300%;
+    }
+}
+
+
+.hero p {
+
+    margin-top: 20px;
+
+    font-size: 18px;
+
+    color: #94a3b8;
+
+    letter-spacing: 1px;
+}
+
+
+/* =========================
+   分类
+========================= */
+
+.tags {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 12px;
+
+    flex-wrap: wrap;
+
+    margin:
+        40px auto 55px;
+
+    padding: 0 20px;
+}
+
+
+.tag {
+
+    padding:
+        9px 22px;
+
+    border-radius: 30px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, .12);
+
+    background:
+        rgba(255, 255, 255, .06);
+
+    color: #b9c5d8;
+
+    cursor: pointer;
+
+    transition: .3s;
+}
+
+
+.tag:hover,
+.tag.active {
+
+    color: white;
+
+    border-color: #67e8f9;
+
+    background:
+        rgba(103, 232, 249, .1);
+
+    box-shadow:
+        0 0 20px
+        rgba(0, 234, 255, .12);
+}
+
+
+/* =========================
+   作品容器
+========================= */
+
+.container {
+
+    width: 84%;
+
+    max-width: 1500px;
+
+    margin: auto;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(320px, 1fr)
+        );
+
+    gap: 30px;
+
+    padding-bottom: 90px;
+}
+
+
+/* =========================
+   作品卡片
+========================= */
+
+.card {
+
+    position: relative;
+
+    overflow: hidden;
+
+    border-radius: 25px;
+
+    background:
+        rgba(255, 255, 255, .07);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, .13);
+
+    backdrop-filter: blur(20px);
+
+    transition:
+        transform .4s,
+        box-shadow .4s,
+        border-color .4s;
+}
+
+
+.card::before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 200px;
+    height: 200px;
+
+    top: -100px;
+    right: -100px;
+
+    background: #00eaff;
+
+    filter: blur(90px);
+
+    opacity: .08;
+
+    pointer-events: none;
+}
+
+
+.card:hover {
+
+    transform:
+        translateY(-10px);
+
+    border-color:
+        rgba(139, 233, 255, .35);
+
+    box-shadow:
+        0 25px 70px
+        rgba(0, 0, 0, .45);
+}
+
+
+/* =========================
+   作品封面
+========================= */
+
+.cover {
+
+    height: 210px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    font-size: 72px;
+
+    position: relative;
+
+    overflow: hidden;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            rgba(0, 198, 255, .25),
+            rgba(139, 92, 246, .3)
+        );
+}
+
+
+.cover::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 180%;
+
+    height: 1px;
+
+    background:
+
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, .6),
+            transparent
+        );
+
+    transform:
+        rotate(-25deg)
+        translateX(-50%);
+
+    animation:
+        scan 5s linear infinite;
+}
+
+
+@keyframes scan {
+
+    0% {
+        left: -100%;
+    }
+
+    100% {
+        left: 150%;
+    }
+}
+
+
+/* =========================
+   信息
+========================= */
+
+.info {
+
+    padding: 30px;
+}
+
+
+.info h2 {
+
+    font-size: 25px;
+
+    margin-bottom: 12px;
+}
+
+
+.desc {
+
+    color: #aebbd0;
+
+    line-height: 1.7;
+
+    font-size: 15px;
+}
+
+
+/* =========================
+   技术标签
+========================= */
+
+.stack {
+
+    margin: 18px 0;
+}
+
+
+.stack span {
+
+    display: inline-block;
+
+    padding:
+        5px 11px;
+
+    margin:
+        3px 4px 3px 0;
+
+    border-radius: 12px;
+
+    font-size: 12px;
+
+    color: #bcd2e8;
+
+    background:
+        rgba(255, 255, 255, .07);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, .08);
+}
+
+
+/* =========================
+   AI说明
+========================= */
+
+.ai {
+
+    color: #8be9ff;
+
+    font-size: 13px;
+
+    margin-bottom: 22px;
+}
+
+
+/* =========================
+   跳转按钮区域
+========================= */
+
+.buttons {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 12px;
+}
+
+
+/* =========================
+   可复用按钮
+========================= */
+
+.work-button {
+
+    position: relative;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+    min-height: 78px;
+
+    padding:
+        12px 10px;
+
+    border-radius: 18px;
+
+    text-decoration: none;
+
+    color: white;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            rgba(0, 198, 255, .16),
+            rgba(139, 92, 246, .2)
+        );
+
+    border:
+        1px solid
+        rgba(139, 233, 255, .18);
+
+    overflow: hidden;
+
+    transition: .35s;
+}
+
+
+.work-button::before {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+
+        linear-gradient(
+            120deg,
+            transparent 30%,
+            rgba(255, 255, 255, .14),
+            transparent 70%
+        );
+
+    transform:
+        translateX(-120%);
+
+    transition: .6s;
+}
+
+
+.work-button:hover::before {
+
+    transform:
+        translateX(120%);
+}
+
+
+.work-button:hover {
+
+    transform:
+        translateY(-4px);
+
+    border-color:
+        rgba(139, 233, 255, .5);
+
+    box-shadow:
+        0 10px 30px
+        rgba(0, 198, 255, .16);
+
+    background:
+
+        linear-gradient(
+            135deg,
+            rgba(0, 198, 255, .25),
+            rgba(139, 92, 246, .3)
+        );
+}
+
+
+.button-icon {
+
+    font-size: 19px;
+
+    margin-bottom: 4px;
+}
+
+
+.button-name {
+
+    font-size: 14px;
+
+    font-weight: 700;
+}
+
+
+/* =========================
+   按钮说明文字
+========================= */
+
+.button-desc {
+
+    margin-top: 4px;
+
+    font-size: 10px;
+
+    color: #8fa1b8;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    max-width: 90%;
+}
+
+
+/* =========================
+   Footer
+========================= */
+
+footer {
+
+    text-align: center;
+
+    padding:
+        40px 20px;
+
+    border-top:
+        1px solid
+        rgba(255, 255, 255, .06);
+
+    color: #64748b;
+
+    font-size: 13px;
+}
+
+
+/* =========================
+   移动端
+========================= */
+
+@media (max-width: 600px) {
+
+    .header {
+
+        padding:
+            25px 20px;
+    }
+
+
+    .logo {
+
+        font-size: 18px;
+    }
+
+
+    .hero {
+
+        padding-top: 40px;
+    }
+
+
+    .container {
+
+        width: 92%;
+
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .buttons {
+
+        grid-template-columns:
+            1fr 1fr;
+    }
+
+}
